@@ -1,2 +1,10 @@
 env
 __pycache__
+.env
+
+*.turso.io
+
+migrations
+
+
+.gitignore
