@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="py-6 md:w-1/2 md:mx-auto text-xl font-bold text-center">
+        <h1>تسجيل دخول</h1>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded shadow-sm p-6 md:w-1/2 md:mx-auto">
+        <form method="POST">
+            {{form.csrf}}
+            {{ form.hidden_tag() }}
+        
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ form.email.label }}</legend>
+                {{ form.email(required=False, class="input w-full", placeholder="اكتب البريد الإلكتروني") }}
+                <p class="label text-red-500">
+                    {{ form.email.errors[0] if form.email.errors else '' }}
+                </p>
+            </fieldset>
+        
+            
+        
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ form.password.label }}</legend>
+                {{ form.password(required=False, class="input w-full", placeholder="اكتب كلمة السر")  }}
+                <p class="label text-red-500">
+                    {{ form.password.errors[0] if form.password.errors else '' }}
+                </p>
+            </fieldset>
+            
+            <button type="submit" class="btn btn-neutral mt-6">تسجيل الدخول</button>
+        </form>
+
+        <p class="mt-4">
+            <a class="link" href="{{ url_for('auth.register') }}">ليس لديك حساب ؟</a>
+        </p>
+
+        <p class="mt-4">
+            <a class="link" href="{{ url_for('auth.reset_password') }}">هل نسيت كلمة السر؟</a>
+        </p>
+    </div>
+{% endblock %}

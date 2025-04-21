@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" x-data="{
+    toasts: [],
+    showToast(message, type = 'info') {
+        const id = Date.now()
+        this.toasts.push({ id, message, type, visible: false })
+
+        // Show the toast with animation
+        setTimeout(() => {
+            const toast = this.toasts.find(t => t.id === id)
+            if (toast) toast.visible = true
+        }, 10)
+
+        // Hide after 3 seconds
+        setTimeout(() => {
+            const toast = this.toasts.find(t => t.id === id)
+            if (toast) toast.visible = false
+        }, 3000)
+
+        // Remove from DOM after transition
+        setTimeout(() => {
+            this.toasts = this.toasts.filter(t => t.id !== id)
+        }, 3500)
+    }
+}" x-init="
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            showToast(`{{ message }}`, '{{ category }}');
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@imacrayon/alpine-ajax@0.12.1/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+
+
+    <title>Jobz {% block title %}{% endblock %}</title>
+</head>
+<body dir="rtl" class="bg-gray-50" style="font-family: 'Cairo', sans-serif;">
+    {% include "partials/_navbar.html" %}
+    {% include "partials/_flash_messages.html" %}
+    <main class="px-2 md:px-6 lg:px-12 min-h-screen py-8">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

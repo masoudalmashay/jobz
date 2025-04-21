@@ -1,0 +1,27 @@
+<div class="fixed top-12 left-1/2 transform -translate-x-1/2 space-y-2 z-50 max-w-md">
+    <template x-for="toast in toasts" :key="toast.id">
+        <div
+            x-show="toast.visible"
+            x-transition:enter="transition transform ease-out duration-100"
+            x-transition:enter-start="translate-y-[-20px] scale-90 opacity-0"
+            x-transition:enter-end="translate-y-0 scale-100 opacity-100"
+            x-transition:leave="transition transform ease-in duration-100"
+            x-transition:leave-start="translate-y-0 scale-100 opacity-100"
+            x-transition:leave-end="translate-y-[-20px] scale-90 opacity-0"
+            :class="{
+                'alert': true,
+                'alert-success': toast.type === 'success',
+                'alert-error': toast.type === 'error',
+                'alert-warning': toast.type === 'warning',
+                'alert-info': toast.type === 'info'
+            }"
+            class="shadow-lg w-72"
+        >
+            <span x-text="toast.message"></span>
+        </div>
+    </template>
+
+
+
+
+</div>

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="py-6 md:w-1/2 md:mx-auto text-xl font-bold text-center">
+        <h1>تسجيل كشركة</h1>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded shadow-sm p-6 md:w-1/2 md:mx-auto">
+        <form method="POST" enctype="multipart/form-data">
+            {{form.csrf}}
+            {{ form.hidden_tag() }}
+        
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ form.email.label }}</legend>
+                {{ form.email(required=False, class="input w-full", placeholder="اكتب البريد الإلكتروني") }}
+                <p class="label text-red-500">
+                    {{ form.email.errors[0] if form.email.errors else '' }}
+                </p>
+            </fieldset>
+        
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ form.phone.label }}</legend>
+                {{ form.phone(required=False, class="input w-full", placeholder="اكتب رقم الهاتف") }}
+                <p class="label text-red-500">
+                    {{ form.phone.errors[0] if form.phone.errors else '' }}
+                </p>
+            </fieldset>
+        
+        
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ form.company_name.label }}</legend>
+                {{ form.company_name(required=False, class="input w-full", placeholder="اكتب اسم الشركة") }}
+                <p class="label text-red-500">
+                    {{ form.company_name.errors[0] if form.company_name.errors else '' }}
+                </p>
+            </fieldset>
+        
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ form.password.label }}</legend>
+                {{ form.password(required=False, class="input w-full", placeholder="اكتب كلمة السر")  }}
+                <p class="label text-red-500">
+                    {{ form.password.errors[0] if form.password.errors else '' }}
+                </p>
+            </fieldset>
+        
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ form.confirm_password.label }}</legend>
+                {{ form.confirm_password(required=False, class="input w-full", placeholder="تأكيد كلمة السر") }}
+                <p class="label text-red-500">
+                    {{ form.confirm_password.errors[0] if form.confirm_password.errors else '' }}
+                </p>
+            </fieldset>
+        
+        
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ form.logo.label }}</legend>
+                {{ form.logo(id="logo-upload", style="display: none;", required=False) }}
+        
+                <div  class="btn" onclick="document.getElementById('logo-upload').click();">📁 اختر الشعار</div>
+                <p class="label text-red-500">
+                    {{ form.logo.errors[0] if form.logo.errors else '' }}
+                </p>
+            </fieldset>
+        
+            <div class="avatar" style="display: none; margin-top: 10px;" id="logo-container">
+                <div class="mask mask-squircle w-24">
+                    <img id="logo-preview" src="#" alt="معاينة الشعار"  />
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-neutral mt-6">تسجيل</button>
+        </form>
+
+        <p class="mt-4">
+            <a class="link" href="{{ url_for('auth.login') }}">هل لديك حساب ؟</a>
+        </p>
+    </div>
+{% endblock %}
