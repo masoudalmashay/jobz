@@ -1,3 +1,10 @@
 flask
 supabase
 gunicorn
+python-dotenv
+Flask-SQLAlchemy
+Flask-Migrate
+sqlalchemy-libsql
+Flask-Login
+Flask-WTF
+boto3
