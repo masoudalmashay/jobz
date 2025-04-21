@@ -8,3 +8,4 @@ sqlalchemy-libsql
 Flask-Login
 Flask-WTF
 boto3
+email_validator
