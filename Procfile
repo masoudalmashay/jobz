@@ -1,1 +1,1 @@
-web: gunicorn --bind :$PORT jobz.run:app
+web: gunicorn --bind :$PORT run:app
