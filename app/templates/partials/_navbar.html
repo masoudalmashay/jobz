@@ -5,27 +5,31 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /> </svg>
         </div>
         <ul
-          tabindex="0"
-          class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-          {% if current_user.is_authenticated: %}
-            <li><a>الحساب</a></li>
-          {% endif %}
-          <li><a href="{{url_for('main.home')}}">الرئيسية</a></li>
-          <li><a href="{{url_for('main.about')}}">عنا</a></li>
-          <li><a href="{{url_for('main.prices')}}">الباقات</a></li>
-          {% if not current_user.is_authenticated: %}
-          <li><a href="{{url_for('auth.login')}}">تسجيل الدخول</a></li>
-          <li><a href="{{url_for('auth.register')}}">تسجيل</a></li>
-          {% else: %}
-            <li><a class="text-red-500" href="{{url_for('auth.logout')}}">تسجيل الخروج</a></li>
-          {% endif %}
-        </ul>
+        tabindex="0"
+        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+        
+        {% if current_user.is_authenticated: %}
+          <li><a href="{{url_for('profile.edit')}}">👤 الحساب</a></li>
+          <li><a href="{{ url_for('job_listing.my_jobs') }}">📝 وظائفي</a></li>
+        {% endif %}
+        
+        <li><a href="{{url_for('main.home')}}">🏠 الرئيسية</a></li>
+        <li><a href="{{url_for('main.prices')}}">💰 الباقات</a></li>
+        
+        {% if not current_user.is_authenticated: %}
+          <li><a href="{{url_for('auth.login')}}">🔐 تسجيل الدخول</a></li>
+          <li><a href="{{url_for('auth.register')}}">📝 تسجيل</a></li>
+        {% else: %}
+          <li><a class="text-red-500" href="{{url_for('auth.logout')}}">🚪 تسجيل الخروج</a></li>
+        {% endif %}
+      </ul>
+
       </div>
     </div>
     <div class="navbar-center">
-      <a href="{{url_for('main.home')}}" class="btn btn-ghost text-xl">Jobz</a>
+      <a href="{{ url_for('main.home') }}" class="btn btn-ghost text-xl">✨ Shughul ✨</a>
     </div>
     <div class="navbar-end space-x-2">
-        <a class="btn btn-neutral" href="{{url_for('job_listing.add')}}">نشر وظيفة</a>
+      <a class="btn btn-neutral btn-xs md:btn-md" href="{{url_for('job_listing.add')}}">➕ إضافة وظيفة</a>
     </div>
   </div>

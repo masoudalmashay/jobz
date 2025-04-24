@@ -4,13 +4,10 @@
 
 {% endblock %}
 
-
-{% block hero %}
-{% include "partials/_hero.html" %}
-{%endblock%}
-
-
 {% block content %}
+<div class="px-2 md:px-6  pt-8 w-full md:w-[80%] md:mx-auto text-sm md:text-lg font-bold">
+      وظائفي
+</div>
 <div class="px-2 md:px-6  pt-8 w-full md:w-[80%] md:mx-auto text-sm text-gray-500">
     تصنيف بناءا على
 </div>
@@ -51,7 +48,7 @@
     </div>
   </form>
   
-<div class="p-2 md:p-6 w-full md:w-[80%] md:mx-auto space-y-4" id="records" x-merge="append">
+<div class="p-2 md:p-6 w-full md:w-[80%] md:mx-auto space-y-4">
     {% if not jobs %}
         <p class="text-center text-gray-600">لا يوجد وظائف</p>
     {% else: %}
@@ -75,12 +72,37 @@
             </div>
         </div>
         <div>
-            <a href="{{url_for('job_listing.single_job', job_id=job['job'].slug)}}" class="btn btn-neutral btn-sm md:btn-lg w-full mt-4 md:mt-0">🚀 تقديم</a>
+            <!-- 🗑️ Delete Button -->
+            <button 
+            class="btn btn-neutral btn-sm md:btn-lg w-full mt-4 md:mt-0"
+            @click="document.getElementById('delete_modal_{{ job['job'].id }}').showModal()">
+            حذف 🤫
+            </button>
+
+            <!-- 🧾 Modal for Confirm Delete -->
+            <dialog id="delete_modal_{{ job['job'].id }}" class="modal modal-bottom sm:modal-middle">
+                <div class="modal-box">
+                    <h3 class="text-lg font-bold text-red-600">تأكيد الحذف</h3>
+                    <p class="py-4">هل أنت متأكد أنك تريد حذف هذه الوظيفة؟ لا يمكن التراجع عن هذا الإجراء.</p>
+                    <div class="modal-action">
+                    <!-- Cancel Button -->
+                        <form method="dialog">
+                            <button class="btn">إلغاء</button>
+                        </form>
+                        <!-- Confirm Delete -->
+                        <form method="POST" action="{{ url_for('job_listing.delete_job', job_id=job['job'].id) }}">
+                            <button class="btn btn-error" type="submit">نعم، احذف</button>
+                        </form>
+                    </div>
+                </div>
+            </dialog>
+
+            <a href="{{url_for('job_listing.single_job', job_id=job['job'].slug)}}" class="btn btn-neutral btn-sm md:btn-lg w-full mt-4 md:mt-2">عرض 👁️‍🗨️</a>
         </div>
     </div>
     {% endfor %}
 
-    <div class="mt-6 flex justify-center space-x-2" id="pagination" x-init x-intersect="$ajax('{{ url_for('main.home', page=pagination.next_num, search=current_search, category=current_category, city=current_city) }}', { target: 'records pagination' })" >
+    <div class="mt-6 flex justify-center space-x-2">
         {% if pagination.has_prev %}
           <a href="{{ url_for('main.home', page=pagination.prev_num, search=current_search, category=current_category, city=current_city) }}" class="btn btn-outline">⬅️ السابق</a>
         {% endif %}
@@ -92,10 +114,8 @@
         {% endif %}
     </div>
 
-
-    {% endif %}
-
     
+    {% endif %}
     
 </div>
 {% endblock %}

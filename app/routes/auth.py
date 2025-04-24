@@ -23,9 +23,11 @@ auth = Blueprint("auth", __name__)
 
 
 @auth.before_request
-def redirect_if_not_authenticated():
-    if (request.endpoint == 'auth.register' or request.endpoint == 'auth.login') and not current_user.is_authenticated:
-        session.pop('next', None)
+def clear_next_if_direct_access():
+    if request.endpoint in ['auth.login', 'auth.register']:
+        # Only clear if this isn't part of a redirect
+        if not request.referrer or request.referrer == request.url:
+            session['next'] = request.url
 
 
 
@@ -62,7 +64,7 @@ def register():
                 ExtraArgs={'ACL': 'public-read'}
             )
 
-            logo_url = f"{os.getenv('R2_ENDPOINT')}/{os.getenv('R2_BUCKET')}/{filename}"
+            logo_url = f"{filename}"
 
             supabase.auth.update_user({
                 "data": {"logo_url": logo_url}
@@ -78,26 +80,24 @@ def register():
             login_user(user)
 
 
-            print(current_user.email)
 
             supabase.auth.resend({
                 "type": 'signup',
                 "email": current_user.email
             })
 
-            flash("تم تسجيل الدخول بنجاح", "success")
+            flash("🎉 تم تسجيل الدخول بنجاح", "success")
 
             next_page = session.get('next', url_for('profile.index'))
-            return redirect(next_page)
+            return redirect(next_page or "/")
         except AuthApiError as e:
             if e.code == "user_already_exists":
-                flash("لديك حساب بهذا الإيميل", "warning")
+                flash("📧 لديك حساب بهذا الإيميل", "warning")
             else:
-                print(e.code)
-                flash("حدث خطأ", "error")
+                flash("😔 حدث خطأ، يرجى المحاولة لاحقاً", "error")
         except Exception as e:
-            print(e)
-            flash("حدث خطأ", "error")
+            flash("😔 حدث خطأ، يرجى المحاولة لاحقاً", "error")
+
         
 
     
@@ -128,20 +128,28 @@ def login():
             session['supabase_access_token'] = access_token
             session['supabase_refresh_token'] = refresh_token
 
+            
             login_user(user)
+            
 
-            flash("تم تسجيل الدخول بنجاح", "success")
-            next_page = session.get('next', url_for('profile.index'))
+            flash("🎉 تم تسجيل الدخول بنجاح", "success")
+            
+            next_page = session['next'] or url_for('profile.index')
+
+            
             return redirect(next_page)
             
         except AuthApiError as e:
             if e.code == "invalid_credentials":
-                flash("تحقق من كلمة المرور أو البريد الإلكتروني", "error")
+                flash("🔒 تحقق من كلمة المرور أو البريد الإلكتروني", "error")
             else:
-                flash("حدث خطأ", "error")
+                flash("😔 حدث خطأ، يرجى المحاولة لاحقاً", "error")
+
 
         except Exception as e:
-            flash("حدث خطأ", "error")
+            flash("😔 حدث خطأ، يرجى المحاولة لاحقاً", "error")
+
+    
     return render_template("auth/login.html", form=form)
 
 
@@ -157,7 +165,7 @@ def resend_verify_link():
         })
         except AuthApiError as e:
             print(e)
-    flash("قم بالتحقق من بريدك الإلكتروني")
+    flash("🔍 قم بالتحقق من بريدك الإلكتروني", "info")
     return redirect(request.referrer or '/')
 
 @auth.route("/verify-email")
@@ -168,10 +176,10 @@ def verify_email():
             "data": {"email_confirmed": True}
         })
 
-        flash('تم تأكيد الحساب', 'success')
+        flash('🎉 تم تأكيد الحساب بنجاح', 'success')
         return redirect(url_for('/'))
     
-    flash('قم بتسجيل الدخول أولا', 'warning')
+    flash('🚪 قم بتسجيل الدخول أولاً', 'warning')
     return redirect(url_for('/'))
 
     
@@ -186,10 +194,11 @@ def reset_password():
             email = form.email.data
             data = supabase.auth.reset_password_for_email(email, {})
 
-            flash("لقد تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك")
+            flash("🔗 لقد تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك", "info")
             return redirect(request.referrer or '/')
         except AuthApiError as e:
-            print(e.code)
+            flash("😔 حدث خطأ، يرجى المحاولة لاحقاً", "error")
+
 
     return render_template("auth/reset-password.html", form=form)
 
@@ -214,11 +223,13 @@ def confirm_update_password():
 
         login_user(user)
 
-        flash("يرجى تغيير كلمة السر", "success")
+        flash("🎉 يرجى تغيير كلمة السر", "success")
+
 
         return redirect(url_for('auth.update_password'))
     except:
-        flash("حدث خطأ ما")
+        flash("😔 حدث خطأ، يرجى المحاولة لاحقاً", "error")
+
         return redirect(url_for('main.home')), 400
 
 
@@ -235,7 +246,7 @@ def update_password():
 
 
 
-        flash('تم تغيير كلمة السر', "success")
+        flash('🎉 تم تغيير كلمة السر بنجاح', "success")
         return redirect(url_for('main.home'))
     
 

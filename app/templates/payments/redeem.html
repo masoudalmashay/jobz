@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="py-6 md:w-1/2 md:mx-auto text-xl font-bold text-center">
+        <h1>كروت الدفع المسبق 💳</h1>
+        
+        <p class="font-normal text-lg">قم بكتابة الرقم السري الموجود في الكرت ✨</p>
+    </div>
+
+
+    <div class="bg-white border border-gray-200 rounded shadow-sm p-6 md:w-1/2 md:mx-auto">
+        <form method="POST" x-data="{ loading: false }" @submit.prevent="loading = true; $el.submit()">
+            {{form.csrf}}
+            {{ form.hidden_tag() }}
+        
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ form.code.label }}</legend>
+                {{ form.code(required=False, class="input w-full", placeholder="اكتب الكود الموجود في الكرت") }}
+                <p class="label text-red-500">
+                    {{ form.code.errors[0] if form.code.errors else '' }}
+                </p>
+            </fieldset>
+        
+            
+        
+            
+            
+            <button type="submit" class="btn btn-neutral mt-6" :disabled="loading" x-text="loading ? '⏳  انتظر رجاءا ...' : 'استمرار'" ></button>
+        </form>
+    </div>
+{% endblock %}

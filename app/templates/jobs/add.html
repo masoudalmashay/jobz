@@ -1,0 +1,99 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+    إضافة وظيفة
+{% endblock %}
+
+{%block style %}
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
+{%endblock%}
+
+{% block content %}
+
+    <div class="md:w-1/2 md:mx-auto mb-4">
+        <div role="alert" class=" justify-items-stretch shadow-sm rounded-sm border text-gray-800 font-medium">
+            <div class="flex justify-between items-center w-full p-3 rounded">
+                <span>📌 تبقّى لديك <strong>{{ credits or 0 }}</strong> إعلان يمكن نشره.</span>
+                <a href="{{ url_for('main.prices') }}" class="btn btn-neutral btn-sm">إضافة رصيد</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="py-6 md:w-1/2 md:mx-auto text-xl font-bold text-center">
+        <h1>إضافة وظيفة جديدة</h1>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded shadow-sm p-6 md:w-1/2 md:mx-auto">
+        <form method="POST" x-data="{ loading: false }" @submit.prevent="loading = true; $el.submit()">
+            {{ form.csrf_token }}
+            {{ form.hidden_tag() }}
+
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ form.title.label }}</legend>
+                {{ form.title(class="input w-full", placeholder="عنوان الوظيفة", required=False) }}
+                <p class="label text-red-500">
+                    {{ form.title.errors[0] if form.title.errors else '' }}
+                </p>
+            </fieldset>
+
+            <style>
+                /* Hide everything except bold, italic, link */
+                trix-toolbar [data-trix-button-group]:not([data-trix-button-group="text-tools"]):not([data-trix-button-group="link-tools"]) {
+                  display: none;
+                }
+              
+                /* Optionally hide strikethrough, code, etc., if you only want bold & italic */
+                trix-toolbar [data-trix-attribute="strike"],
+                trix-toolbar [data-trix-attribute="code"] {
+                  display: none;
+                }
+
+                trix-editor {
+                    min-height: 200px; /* adjust as needed */
+                  }
+              </style>
+
+              <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ form.description.label }}</legend>
+                
+                {{ form.description(type="hidden", id="x", style="display:none;") }}
+            
+                <trix-editor 
+                    input="x" 
+                    class="trix-content bg-white border border-gray-300 p-2 rounded"
+                    placeholder="ما هي الوظيفة؟ اكتب وصفًا عامًا يوضح طبيعة العمل، المهام اليومية، والفريق أو القسم الذي سيكون فيه الموظف."></trix-editor>
+            
+                <p class="label text-red-500">
+                    {{ form.description.errors[0] if form.description.errors else '' }}
+                </p>
+            </fieldset>
+
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ form.category_id.label }}</legend>
+                {{ form.category_id(class="input w-full", required=False) }}
+                <p class="label text-red-500">
+                    {{ form.category_id.errors[0] if form.category_id.errors else '' }}
+                </p>
+            </fieldset>
+
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ form.city_id.label }}</legend>
+                {{ form.city_id(class="input w-full", required=False) }}
+                <p class="label text-red-500">
+                    {{ form.city_id.errors[0] if form.city_id.errors else '' }}
+                </p>
+            </fieldset>
+
+            <span class="hidden">{{ form.user_id() }}</span>  {# hidden field #}
+
+            <button type="submit" class="btn btn-neutral mt-6" :disabled="loading" x-text="loading ? '⏳  انتظر رجاءا ...' : '📢 نشر الوظيفة'">📢 نشر الوظيفة</button>
+        </form>
+    </div>
+{% endblock %}
+
+{%block script%}
+<script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
+{%endblock%}
+

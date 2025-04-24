@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}
+    اختيار طريقة الدفع
+{% endblock %}
+
+{% block content %}
+<div class="py-6 md:w-1/2 md:mx-auto text-xl font-bold text-center">
+    <h1>قم باختيار طريقة الدفع 💖</h1>
+</div>
+
+
+<div class="bg-white border border-gray-200 rounded shadow-sm p-6 md:w-1/2 md:mx-auto">
+    <form method="POST">
+        {{ form.csrf }}
+        {{ form.hidden_tag() }}
+    
+        <div class="mb-4">
+            <label class="block mb-2 text-lg font-semibold text-center">اختر طريقة الدفع 💰</label>
+            {% for subfield in form.payment_method %}
+                <div class="flex items-center gap-2 mb-2">
+                    {{ subfield(class="radio radio-neutral") }}
+                    <label>{{ subfield.label.text }}</label>
+                </div>
+            {% endfor %}
+            {% if form.payment_method.errors %}
+                <div class="text-red-500 text-sm">{{ form.payment_method.errors[0] }}</div>
+            {% endif %}
+        </div>
+    
+        <span class="hidden">
+            {{form.set_package_id(package.id) }}
+        </span>
+    
+        <button type="submit" class="btn btn-neutral w-full mt-4">
+            {{ form.submit.label.text }} 🚀
+        </button>
+    </form>
+    
+</div>
+{% endblock %}

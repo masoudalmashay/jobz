@@ -6,9 +6,8 @@
 
 {% block content %}
     <div class="py-6 md:w-1/2 md:mx-auto text-xl font-bold text-center">
-        <h1>تسجيل كشركة</h1>
+        <h1>🏢 تسجيل كشركة</h1>
     </div>
-
     <div class="bg-white border border-gray-200 rounded shadow-sm p-6 md:w-1/2 md:mx-auto">
         <form method="POST" enctype="multipart/form-data">
             {{form.csrf}}
@@ -67,16 +66,17 @@
             </fieldset>
         
             <div class="avatar" style="display: none; margin-top: 10px;" id="logo-container">
-                <div class="mask mask-squircle w-24">
+                <div class="mask rounded-full border border-gray-400 w-24">
                     <img id="logo-preview" src="#" alt="معاينة الشعار"  />
                 </div>
             </div>
             
-            <button type="submit" class="btn btn-neutral mt-6">تسجيل</button>
+            <button type="submit" class="btn btn-neutral mt-6">📝 تسجيل</button>
         </form>
 
         <p class="mt-4">
-            <a class="link" href="{{ url_for('auth.login') }}">هل لديك حساب ؟</a>
+            <a class="link" href="{{ url_for('auth.login') }}">🔐 هل لديك حساب؟</a>
         </p>
+        
     </div>
 {% endblock %}

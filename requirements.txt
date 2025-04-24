@@ -10,3 +10,5 @@ Flask-WTF
 boto3
 email_validator
 psycopg2
+APScheduler
+python-slugify

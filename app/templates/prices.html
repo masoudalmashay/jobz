@@ -5,4 +5,70 @@
 {% endblock %}
 
 {% block content %}
+<div class="text-center py-8 space-y-2">
+    <h1 class="text-2xl">خطط النشر الإعلاني</h1>
+    <p class="text-lg text-gray-500">اختر الباقة التي تناسب احتياجاتك الإعلانية بكل وضوح وسهولة</p>
+</div>
+<div class="md:flex gap-8 justify-center items-stretch space-y-4 md:space-y-0">
+    <div class="card md:w-96 bg-base-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <div class="card-body p-6">
+          <div class="flex items-center justify-between">
+            <span class="badge badge-xs badge-warning" aria-label="الأكثر شيوعا">🔥 الأكثر شيوعاً</span>
+            <span class="text-xl font-semibold">💰 {{packages[0].price}} ل.د</span>
+          </div>
+          <h2 class="text-3xl font-bold mt-4">👤 سولو</h2>
+          <div class="flex-grow">
+            <ul class="mt-6 space-y-3 text-sm">
+                <li class="flex items-center">
+                  ✅ <span class="ml-2">منشور واحد فقط – سهل وسريع 🎯</span>
+                </li>
+                <li class="flex items-center">
+                  🕒 <span class="ml-2">النشر في أي وقت – صالح مدى الحياة ♾️</span>
+                </li>
+                <li class="flex items-center">
+                  📅 <span class="ml-2">المنشور يبقى لمدة {{packages[0].duration_days}} يوم ⏳</span>
+                </li>
+              </ul>
+          </div>
+          <div class="mt-6">
+            <a href="{{url_for('payment.payment_options', package_id=packages[0].id)}}" class="btn btn-neutral w-full py-2 hover:bg-primary-focus transition-colors duration-300" aria-label="اختر باقة سولو">
+              🚀 اختر الباقة
+            </a>
+          </div>
+        </div>
+    </div>
+      
+
+    <div class="card md:w-96 bg-base-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <div class="card-body p-6">
+          <div class="flex items-center justify-between">
+            <span class="badge badge-xs badge-info" aria-label="الأكثر توفيراً">💡 الأكثر توفيراً</span>
+            <span class="text-xl font-semibold">💸 {{packages[1].price}} ل.د</span>
+          </div>
+          <h2 class="text-3xl font-bold mt-4">🎯 تربل</h2>
+          <div class="flex-grow">
+            <ul class="mt-6 space-y-3 text-sm">
+                <li class="flex items-center">
+                  ✅ <span class="ml-2">3 منشورات – فرصة ثلاثية للظهور 👀</span>
+                </li>
+                <li class="flex items-center">
+                  🕒 <span class="ml-2">النشر في أي وقت – صالح مدى الحياة ♾️</span>
+                </li>
+                <li class="flex items-center">
+                  📅 <span class="ml-2">كل منشور صالح لمدة {{packages[1].duration_days}} يوم ⏳</span>
+                </li>
+                <li class="flex items-center">
+                  🧠 <span class="ml-2">أكثر توفيرًا من الإعلان الفردي 💡</span>
+                </li>
+              </ul>
+          </div>
+          <div class="mt-6">
+            <a href="{{url_for('payment.payment_options', package_id=packages[1].id)}}" class="btn btn-neutral w-full py-2 hover:bg-primary-focus transition-colors duration-300" aria-label="اختر باقة ثلاثي الحظ">
+              📢 اختر الباقة
+            </a>
+          </div>
+        </div>
+      </div>
+      
+</div>
 {% endblock %}

@@ -1,3 +1,7 @@
+document.addEventListener("trix-file-accept", function (event) {
+  event.preventDefault(); // This disables all file/image uploads
+});
+
 function previewLogo(event) {
   const fileInput = event.target;
   const file = fileInput.files[0];

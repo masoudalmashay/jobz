@@ -5,5 +5,116 @@
 {% endblock %}
 
 {% block content %}
-    Home Page
+    <div class="py-6 md:w-1/2 md:mx-auto text-xl font-bold text-center">
+        <h1>تعديل البيانات 🛠️</h1>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded shadow-sm p-6 md:w-1/2 md:mx-auto">
+        <form method="POST" enctype="multipart/form-data">
+            {{logo_form.csrf}}
+            {{ logo_form.hidden_tag() }}
+        
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ logo_form.logo.label }}</legend>
+                {{ logo_form.logo(id="logo-upload", style="display: none;", required=False, onchange="previewLogo(event)") }}
+        
+                <div  class="btn" onclick="document.getElementById('logo-upload').click();">📁 اختر الشعار</div>
+                <p class="label text-red-500">
+                    {{ logo_form.logo.errors[0] if logo_form.logo.errors else '' }}
+                </p>
+            </fieldset>
+        
+            {% if current_user.logo_url %}
+                <div class="avatar" style="margin-top: 10px;" id="logo-container">
+                    <div class="mask rounded-full w-24 border border-gray-400">
+                        <img id="logo-preview" src="{{ 'https://pub-e05d1c07ced94c6e90dcb4d98f654136.r2.dev/'+current_user.logo_url }}" alt="معاينة الشعار" />
+                    </div>
+                </div>
+                {% else %}
+                <div class="avatar" style="display: none; margin-top: 10px;" id="logo-container">
+                    <div class="mask mask-squircle w-24">
+                        <img id="logo-preview" src="#" alt="معاينة الشعار" style="display: none;" />
+                    </div>
+                    <button type="button" id="remove-logo" class="btn btn-sm btn-error mt-2" style="display: none;" onclick="removeLogo()">🗑️ إزالة الشعار</button>
+                </div>
+            {% endif %}
+            <br>
+            
+            <button type="submit" name="submit_logo" class="btn btn-neutral mt-6">تغيير الشعار ✨</button>
+        </form>
+
+        
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded shadow-sm p-6 md:w-1/2 md:mx-auto mt-4">
+        <form method="POST">
+            {{info_form.csrf}}
+            {{ info_form.hidden_tag() }}
+        
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ info_form.email.label }}</legend>
+                {{ info_form.email(required=False, class="input w-full", placeholder="اكتب البريد الإلكتروني", disabled=True) }}
+                <p class="label text-red-500">
+                    {{ info_form.email.errors[0] if info_form.email.errors else '' }}
+                </p>
+            </fieldset>
+        
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ info_form.phone.label }}</legend>
+                {{ info_form.phone(required=False, class="input w-full", placeholder="اكتب رقم الهاتف") }}
+                <p class="label text-red-500">
+                    {{ info_form.phone.errors[0] if info_form.phone.errors else '' }}
+                </p>
+            </fieldset>
+        
+        
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ info_form.company_name.label }}</legend>
+                {{ info_form.company_name(required=False, class="input w-full", placeholder="اكتب اسم الشركة") }}
+                <p class="label text-red-500">
+                    {{ info_form.company_name.errors[0] if info_form.company_name.errors else '' }}
+                </p>
+            </fieldset>
+        
+            
+        
+        
+            
+            
+            <button type="submit" name="submit_info" class="btn btn-neutral mt-6">حفظ التعديلات 💾</button>
+        </form>
+
+       
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded shadow-sm p-6 mt-4 md:w-1/2 md:mx-auto">
+        <form method="POST">
+            {{password_form.csrf}}
+            {{ password_form.hidden_tag() }}
+        
+        
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ password_form.password.label }}</legend>
+                {{ password_form.password(required=False, class="input w-full", placeholder="اكتب كلمة السر الجديدة")  }}
+                <p class="label text-red-500">
+                    {{ password_form.password.errors[0] if password_form.password.errors else '' }}
+                </p>
+            </fieldset>
+        
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">{{ password_form.confirm_password.label }}</legend>
+                {{ password_form.confirm_password(required=False, class="input w-full", placeholder="تأكيد كلمة السر الجديدة") }}
+                <p class="label text-red-500">
+                    {{ password_form.confirm_password.errors[0] if password_form.confirm_password.errors else '' }}
+                </p>
+            </fieldset>
+        
+        
+            
+            
+            <button type="submit" name="submit_password" class="btn btn-neutral mt-6">تعديل كلمة السر 🔒</button>
+        </form>
+
+        
+    </div>
 {% endblock %}
