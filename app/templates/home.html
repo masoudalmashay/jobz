@@ -17,7 +17,7 @@
 <div class="px-2 md:px-6  pt-8 w-full md:w-[80%] md:mx-auto text-sm text-gray-500">
     تصنيف بناءا على
 </div>
-<form method="GET" class="w-full" id="filter-form">
+<form method="GET" class="w-full">
     <div class="pt-2 pb-6 px-2 md:px-6 w-full md:w-[80%] md:mx-auto text-xl font-bold space-y-2 md:space-y-0 md:flex justify-between">
       <div class="flex gap-2 w-full">
         <label class="input">
@@ -83,7 +83,7 @@
     </div>
     {% endfor %}
 
-    <div class="mt-6 flex justify-center space-x-2" id="pagination" x-init x-intersect="$ajax('{{ url_for('main.home', page=pagination.next_num, search=current_search, category=current_category, city=current_city) }}', { target: 'records pagination' })" >
+    <div class="mt-6 flex justify-center space-x-2" id="pagination"  >
         {% if pagination.has_prev %}
           <a href="{{ url_for('main.home', page=pagination.prev_num, search=current_search, category=current_category, city=current_city) }}" class="btn btn-outline">⬅️ السابق</a>
         {% endif %}
