@@ -14,14 +14,14 @@ def delete_expired_jobs(app):
 
 def start(app):
     scheduler = BackgroundScheduler()
-    # scheduler.add_job(func=delete_expired_jobs,args=[app], trigger="interval", seconds=3)
-    scheduler.add_job(
-    func=delete_expired_jobs,
-    args=[app],
-    trigger="cron",
-    hour=0,       # 12 AM (midnight)
-    minute=0,     # 0 minutes
-    second=0      # 0 seconds
-    )
+    scheduler.add_job(func=delete_expired_jobs,args=[app], trigger="interval", seconds=60)
+    # scheduler.add_job(
+    # func=delete_expired_jobs,
+    # args=[app],
+    # trigger="cron",
+    # hour=0,       # 12 AM (midnight)
+    # minute=0,     # 0 minutes
+    # second=0      # 0 seconds
+    # )
     scheduler.start()
     print("scheduler started...")
