@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 
 {% block title %}
-
+    {{job['job'].title}}
 {% endblock %}
+
+{% block description %}
+{{job['job'].description | safe}}
+{%endblock%}
 
 {% block content %}
 
