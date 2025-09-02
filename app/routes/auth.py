@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session, Blueprint
-from ..extensions import supabase, login_manager, s3
+from ..extensions import supabase, login_manager, s3, limiter
 from werkzeug.utils import secure_filename
 from gotrue.errors import AuthApiError
 from flask_login import login_user, current_user, logout_user, login_required
@@ -33,6 +33,7 @@ def clear_next_if_direct_access():
 
 
 @auth.route("/register", methods=['POST', 'GET'])
+@limiter.limit("3 per minute;10 per hour")
 def register():
     if current_user.is_authenticated:
         return redirect(url_for("main.home"))
@@ -54,7 +55,7 @@ def register():
         try:
 
             
-            response = supabase.auth.sign_up({"email": email, "password": password, "options": {"data": {"company_name": company_name,"email": email, "phone": phone,"logo_url": "", "email_confirmed": False}}})
+            response = supabase.auth.sign_up({"email": email, "password": password, "options": {"data": {"company_name": company_name,"email": email, "phone": phone,"logo_url": "", "balance": 0, "email_confirmed": False}}})
 
 
             s3.upload_fileobj(
@@ -72,7 +73,7 @@ def register():
             access_token = response.session.access_token
             refresh_token = response.session.refresh_token
             
-            user = User(id=response.user.id, email=response.user.user_metadata['email'], email_verified=response.user.user_metadata['email_confirmed'], company_name=response.user.user_metadata['company_name'], phone=response.user.user_metadata['phone'], logo_url=response.user.user_metadata['logo_url'])
+            user = User(id=response.user.id, email=response.user.user_metadata['email'], email_verified=response.user.user_metadata['email_confirmed'], company_name=response.user.user_metadata['company_name'], phone=response.user.user_metadata['phone'], logo_url=response.user.user_metadata['logo_url'], balance=response.user.user_metadata.get('balance', 0))
             
             session['supabase_access_token'] = access_token
             session['supabase_refresh_token'] = refresh_token
@@ -106,6 +107,7 @@ def register():
 
 
 @auth.route("/login", methods=["GET", "POST"])
+@limiter.limit("5 per minute;20 per hour")
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("main.home"))
@@ -123,7 +125,7 @@ def login():
             access_token = response.session.access_token
             refresh_token = response.session.refresh_token
             
-            user = User(id=response.user.id, email=response.user.user_metadata['email'], email_verified=response.user.user_metadata['email_confirmed'], company_name=response.user.user_metadata['company_name'], phone=response.user.user_metadata['phone'], logo_url=response.user.user_metadata['logo_url'])
+            user = User(id=response.user.id, email=response.user.user_metadata['email'], email_verified=response.user.user_metadata['email_confirmed'], company_name=response.user.user_metadata['company_name'], phone=response.user.user_metadata['phone'], logo_url=response.user.user_metadata['logo_url'], balance=response.user.user_metadata.get('balance', 0))
             
             session['supabase_access_token'] = access_token
             session['supabase_refresh_token'] = refresh_token
@@ -185,6 +187,7 @@ def verify_email():
     
 
 @auth.route("/reset-password", methods=["GET", "POST"])
+@limiter.limit("5 per hour")
 def reset_password():
     if current_user.is_authenticated:
         return redirect(url_for("main.home"))
@@ -204,6 +207,7 @@ def reset_password():
 
 
 @auth.route("/confirm-update-password", methods=["GET", "POST"])
+@limiter.limit("5 per hour")
 def confirm_update_password():
 
     try:
@@ -217,7 +221,7 @@ def confirm_update_password():
         access_token = response.session.access_token
         refresh_token = response.session.refresh_token
         
-        user = User(id=response.user.id, email=response.user.user_metadata['email'], email_verified=response.user.user_metadata['email_confirmed'], company_name=response.user.user_metadata['company_name'], phone=response.user.user_metadata['phone'], logo_url=response.user.user_metadata['logo_url'])
+        user = User(id=response.user.id, email=response.user.user_metadata['email'], email_verified=response.user.user_metadata['email_confirmed'], company_name=response.user.user_metadata['company_name'], phone=response.user.user_metadata['phone'], logo_url=response.user.user_metadata['logo_url'], balance=response.user.user_metadata['balance'])
         session['supabase_access_token'] = access_token
         session['supabase_refresh_token'] = refresh_token
 
@@ -270,7 +274,7 @@ def load_user(user_id):
             supabase.auth.set_session(access_token=access_token, refresh_token=refresh_token)
             response = supabase.auth.get_user()
             if response and response.user:
-                return User(id=response.user.id, email=response.user.user_metadata['email'], email_verified=response.user.user_metadata['email_confirmed'], company_name=response.user.user_metadata['company_name'], phone=response.user.user_metadata['phone'], logo_url=response.user.user_metadata['logo_url'])
+                return User(id=response.user.id, email=response.user.user_metadata['email'], email_verified=response.user.user_metadata['email_confirmed'], company_name=response.user.user_metadata['company_name'], phone=response.user.user_metadata['phone'], logo_url=response.user.user_metadata['logo_url'], balance=response.user.user_metadata.get('balance', 0))
         except AuthApiError as e:
             print(f"Access token expired or invalid: {e}")
             if refresh_token:
@@ -280,7 +284,7 @@ def load_user(user_id):
                     if refresh_response and refresh_response.session and refresh_response.session.access_token and refresh_response.session.refresh_token and refresh_response.user:
                         session['supabase_access_token'] = refresh_response.session.access_token
                         session['supabase_refresh_token'] = refresh_response.session.refresh_token
-                        return User(id=response.user.id, email=response.user.user_metadata['email'], email_verified=response.user.user_metadata['email_confirmed'], company_name=response.user.user_metadata['company_name'], phone=response.user.user_metadata['phone'], logo_url=response.user.user_metadata['logo_url'])
+                        return User(id=response.user.id, email=response.user.user_metadata['email'], email_verified=response.user.user_metadata['email_confirmed'], company_name=response.user.user_metadata['company_name'], phone=response.user.user_metadata['phone'], logo_url=response.user.user_metadata['logo_url'], balance=response.user.user_metadata.get('balance', 0))
                     else:
                         print(f"Token refresh failed: {refresh_response.error if refresh_response and hasattr(refresh_response, 'error') else 'Unknown refresh error'}")
                         session.pop('supabase_access_token', None)

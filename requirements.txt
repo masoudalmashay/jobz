@@ -1,14 +1,14 @@
 flask
 supabase
-gunicorn
+# gunicorn
 python-dotenv
 Flask-SQLAlchemy
 Flask-Migrate
-sqlalchemy-libsql
 Flask-Login
 Flask-WTF
 boto3
 email_validator
-psycopg2
-APScheduler
+psycopg2-binary
 python-slugify
+requests
+Flask-Limiter

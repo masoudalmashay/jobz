@@ -10,14 +10,18 @@ from .routes.job_listing import job_listing
 from .routes.payment import payment
 
 
-from .extensions import db, migrate, login_manager
-from app.scheduler import start as start_scheduler
+from .extensions import db, migrate, login_manager, limiter
+# from app.scheduler import start as start_scheduler
 
 load_dotenv()
 
 def create_app():
     
     app = Flask(__name__)
+
+    app.secret_key = os.getenv('SECRET_KEY')
+
+    limiter.init_app(app)
 
     NEON_PASSWORD = os.getenv('NEON_PASSWORD')
     NEON_DB = os.getenv('NEON_DB')
@@ -64,5 +68,5 @@ def create_app():
     app.register_blueprint(payment, url_prefix="/payments")
 
 
-    start_scheduler(app)
+    # start_scheduler(app) # vercel does not support background tasks, so i comment this out
     return app

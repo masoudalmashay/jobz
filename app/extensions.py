@@ -5,7 +5,8 @@ from flask_migrate import Migrate
 from supabase import create_client, ClientOptions
 from flask_login import LoginManager
 import boto3
-
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 from botocore.config import Config
 
@@ -46,6 +47,11 @@ s3 = boto3.client(
     aws_access_key_id=os.getenv("R2_ACCESS_KEY"),
     aws_secret_access_key=os.getenv("R2_SECRET_KEY"),
     config=boto_config
+)
+
+limiter = Limiter(
+    get_remote_address,
+    default_limits=["1000 per day", "200 per hour"]
 )
 
 
