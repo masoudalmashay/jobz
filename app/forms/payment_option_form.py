@@ -3,7 +3,7 @@ from wtforms import HiddenField, RadioField, SubmitField
 from wtforms.validators import DataRequired
 
 class PaymentOptionForm(FlaskForm):
-    package_id = HiddenField(validators=[DataRequired()])
+    # package_id = HiddenField(validators=[DataRequired()])
     
     payment_method = RadioField(
         "طريقة الدفع",
@@ -13,5 +13,5 @@ class PaymentOptionForm(FlaskForm):
     
     submit = SubmitField("استمرار")
 
-    def set_package_id(self, package_id):
-        self.package_id = package_id
+    # def set_package_id(self, package_id):
+    #     self.package_id = package_id

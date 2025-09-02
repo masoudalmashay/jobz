@@ -97,3 +97,13 @@ def edit():
         info_form=info_form,
         password_form=password_form
     )
+
+
+@profile.route('/wallet', methods=['GET'])
+@login_required
+def wallet():
+    
+    return render_template(
+        'profile/wallet.html',
+        balance=current_user.balance
+    )
