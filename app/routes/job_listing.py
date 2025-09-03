@@ -9,10 +9,12 @@ from app.models.order import Order
 from app.models.job import Job
 from app.models.category import Category
 from app.models.city import City
+from app.models.social_post import SocialPost
 
 from datetime import datetime, timedelta
 
-from app.extensions import db, get_user_info
+from app.extensions import db, get_user_info, send_slack_notification, post_to_social_media
+from app.lib import can_post_today
 
 from slugify import slugify
 import uuid
@@ -57,6 +59,9 @@ def add():
         if not valid_order:
             flash("💸 ليس لديك رصيد متاح لإضافة وظيفة جديدة", "error")
 
+            user_identifier = current_user.email if current_user.is_authenticated else "visitor"
+            send_slack_notification(f"A new job listing tried by {user_identifier} without credits")
+
             return render_template("jobs/add.html", form=form)
 
         # Calculate job expiration from the order's package duration
@@ -80,14 +85,32 @@ def add():
             expires_at=job_expires_at
         )
 
-        # Update the order to increment used posts
         valid_order.posts_used += 1
         db.session.add(job)
         db.session.commit()
 
+        user = get_user_info(current_user.id)
+        if can_post_today():
+            post_result = post_to_social_media(
+                category_name,
+                city_name,
+                company_name=current_user.name if current_user.is_authenticated else "",
+                job_title=form.title.data,
+                logo_url= user['logo_url'] if user['logo_url'] else None
+            )
+
+            if post_result["status"]:
+                social_post = SocialPost(job_id=job.id)
+                db.session.add(social_post)
+                db.session.commit()
+
 
         flash("🎉 تم إضافة الوظيفة بنجاح", "success")
-        return redirect(request.referrer or '/')  # Replace with your desired redirect
+
+        user_identifier = current_user.email if current_user.is_authenticated else "visitor"
+        send_slack_notification(f"A new job listing by {user_identifier}")
+
+        return redirect(request.referrer or '/') 
 
     return render_template("jobs/add.html", form=form, credits=credits)
 
@@ -123,6 +146,9 @@ def delete_job(job_id):
 
     db.session.delete(job)
     db.session.commit()
+
+    user_identifier = current_user.email if current_user.is_authenticated else "visitor"
+    send_slack_notification(f"A job listing deleted by {user_identifier}")
 
     flash("✅ تم حذف الوظيفة بنجاح", "success")
     return redirect(url_for('job_listing.my_jobs'))

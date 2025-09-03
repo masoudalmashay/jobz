@@ -1,4 +1,5 @@
 import os
+import requests
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from flask_migrate import Migrate
@@ -9,6 +10,13 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
 from botocore.config import Config
+
+
+
+
+    
+import json
+import urllib.request
 
 boto_config = Config(
     retries={'max_attempts': 5, 'mode': 'standard'},
@@ -68,5 +76,104 @@ def get_user_info(user_id):
     }
     except Exception as e:
         return None
+
+
+def send_slack_notification(message):
+    slack_webhook_url = os.getenv("SLACK_WEBHOOK_URL")
+    if not slack_webhook_url:
+        raise ValueError("SLACK_WEBHOOK_URL environment variable is missing")
+
+    data = json.dumps({"text": message}).encode("utf-8")
+    req = urllib.request.Request(slack_webhook_url, data=data, headers={"Content-Type": "application/json"})
+
+    try:
+        with urllib.request.urlopen(req) as response:
+            print("✅ Slack notification sent successfully!")
+            return response.status
+    except Exception as e:
+        print(f"Failed to send message to Slack: {e}")
+        return None
+
+
+def generate_image_template(job_cat, job_place, company_name, job_title, logo_url=None):
+
+    url = f"{os.getenv('APITEMPLATE_URL')}/create-image?template_id={os.getenv('APITEMPLATE_ID')}"
+    token = os.getenv('APITEMPLATE_TOKEN')
+
+    payload = {
+                "overrides": [
+                    {
+                        "name": "job_title",
+                        "text": job_title
+                    },
+                    {
+                        "name": "job_cat",
+                        "text": job_cat
+                    },
+                    {
+                        "name": "job_place",
+                        "text": job_place
+                    },
+                    {
+                        "name": "job_company",
+                        "text": company_name
+                    },
+                    {
+                        "name": "logo" if logo_url else "no_logo",
+                        "src": logo_url
+                    }
+                ]
+            }
+
+    headers = {
+        "Content-Type": "application/json",
+        "X-API-KEY": token,
+        "authorization": f"Bearer {token}"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+
+    if response.status_code == 200:
+        return {"status": True, "data": response.json()}
+    else:
+        return {"status": False, "error": response.json()}
+    
+
+def post_to_social_media(job_cat, job_place, company_name, job_title, logo_url=None):
+    result = generate_image_template(job_cat, job_place, company_name, job_title, logo_url)
+    profile_ids = ['facebook', 'twitter', 'tiktok']
+    post_content = f"""
+    فرصة عمل جديدة في مجال {job_cat} \n
+    بمدينة {job_place} \n
+    في شركة {company_name} \n
+    الوظيفة {job_title}.
+    \n\n\n
+    #وظائف_ليبيا #gowork #{job_cat.replace(' ', '_')}
+    """
+    if result['status'] and result['data']['status'] == "success":
+        url = f"{os.getenv('AYSHARE_URL')}/post"
+        token = os.getenv('AYSHARE_TOKEN')
+
+        payload = {
+            "post": post_content,
+            "platforms": profile_ids,
+            "mediaUrls": [result['data']['download_url_png']]
+        }
+
+        headers = {
+            "Content-Type": "application/json",
+            "authorization": f"Bearer {token}"
+        }
+
+        response = requests.post(url, json=payload, headers=headers)
+
+        if response.status_code == 200:
+            return {"status": True, "data": response.json()}
+        else:
+            return {"status": False, "error": response.json()}
+        
+
+
+    return {"status": False, "error": "something went wrong"}
 
 

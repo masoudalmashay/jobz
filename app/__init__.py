@@ -29,7 +29,8 @@ def create_app():
     NEON_USER = os.getenv('NEON_USER')
 
     
-    app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{NEON_USER}:{NEON_PASSWORD}@ep-old-credit-a2b3vbqj-pooler.eu-central-1.aws.neon.tech/{NEON_DB}?sslmode=require"
+    # app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{NEON_USER}:{NEON_PASSWORD}@ep-old-credit-a2b3vbqj-pooler.eu-central-1.aws.neon.tech/{NEON_DB}?sslmode=require"
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('XATA_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['DEBUG'] = True
     app.config['SECRET_KEY'] = 'your_super_secret_key_here'
@@ -48,6 +49,7 @@ def create_app():
     from .models import package
     from .models import order
     from .models import job
+    from .models import social_post
     
 
     migrate.init_app(app, db)
