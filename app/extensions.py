@@ -166,14 +166,14 @@ def post_to_social_media(job_cat, job_place, company_name, job_title, logo_url=N
         }
 
         response = requests.post(url, json=payload, headers=headers)
-
+        print(f"Social media post response: {response.status_code} - {response.json()}")
         if response.status_code == 200:
             return {"status": True, "data": response.json()}
         else:
             return {"status": False, "error": response.json()}
         
 
-
+    print(f"🚨 Failed to generate image: {result}")
     return {"status": False, "error": "something went wrong"}
 
 

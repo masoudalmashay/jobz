@@ -17,12 +17,12 @@ from flask import request
 
 @main.route("/")
 def home():
-    print(generate_image_template("تقنية معلومات", "بنغازي", "شركة الاختبار", "مهندس برمجيات"))
+    # print(generate_image_template("تقنية معلومات", "بنغازي", "شركة الاختبار", "مهندس برمجيات"))
     search = request.args.get('search', '').strip()
     category_id = request.args.get('category')
     city_id = request.args.get('city')
     page = request.args.get('page', 1, type=int)
-    per_page = 2
+    per_page = 10
 
     query = Job.query
 
