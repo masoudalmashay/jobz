@@ -89,20 +89,20 @@ def add():
         db.session.add(job)
         db.session.commit()
 
-        user = get_user_info(current_user.id)
-        if can_post_today():
-            post_result = post_to_social_media(
-                category_name,
-                city_name,
-                company_name=current_user.name if current_user.is_authenticated else "",
-                job_title=form.title.data,
-                logo_url= user['logo_url'] if user['logo_url'] else None
-            )
+        # user = get_user_info(current_user.id)
+        # if can_post_today():
+        #     post_result = post_to_social_media(
+        #         category_name,
+        #         city_name,
+        #         company_name=current_user.company_name if current_user.is_authenticated else "",
+        #         job_title=form.title.data,
+        #         logo_url= user['logo_url'] if user['logo_url'] else None
+        #     )
 
-            if post_result["status"]:
-                social_post = SocialPost(job_id=job.id)
-                db.session.add(social_post)
-                db.session.commit()
+        #     if post_result["status"]:
+        #         social_post = SocialPost(job_id=job.id)
+        #         db.session.add(social_post)
+        #         db.session.commit()
 
 
         flash("🎉 تم إضافة الوظيفة بنجاح", "success")
