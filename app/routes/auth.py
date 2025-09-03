@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session, Blueprint
-from ..extensions import supabase, login_manager, s3, limiter
+from ..extensions import supabase, login_manager, s3, limiter, send_slack_notification
 from werkzeug.utils import secure_filename
 from gotrue.errors import AuthApiError
 from flask_login import login_user, current_user, logout_user, login_required
@@ -89,15 +89,24 @@ def register():
 
             flash("🎉 تم تسجيل الدخول بنجاح", "success")
 
+            user_identifier = current_user.email if current_user.is_authenticated else "visitor"
+            send_slack_notification(f"A new user registered with email {user_identifier}")
+
             next_page = session.get('next', url_for('profile.index'))
             return redirect(next_page or "/")
         except AuthApiError as e:
             if e.code == "user_already_exists":
                 flash("📧 لديك حساب بهذا الإيميل", "warning")
+
+                user_identifier = current_user.email if current_user.is_authenticated else "visitor"
+                send_slack_notification(f"User Tried to register with a used email {email}")
+
             else:
                 flash("😔 حدث خطأ، يرجى المحاولة لاحقاً", "error")
         except Exception as e:
             flash("😔 حدث خطأ، يرجى المحاولة لاحقاً", "error")
+            user_identifier = current_user.email if current_user.is_authenticated else "visitor"
+            send_slack_notification(f"An error caused by {email} -> {str(e)}")
 
         
 

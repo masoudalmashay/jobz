@@ -4,8 +4,8 @@ from app.models.city import City
 from app.models.category import Category
 
 from app.models.package import Package
-from app.extensions import db, get_user_info
-from flask_login import login_required
+from app.extensions import db, get_user_info, send_slack_notification, generate_image_template
+from flask_login import login_required, current_user
 import os
 from dotenv import load_dotenv
 
@@ -17,6 +17,7 @@ from flask import request
 
 @main.route("/")
 def home():
+    print(generate_image_template("تقنية معلومات", "بنغازي", "شركة الاختبار", "مهندس برمجيات"))
     search = request.args.get('search', '').strip()
     category_id = request.args.get('category')
     city_id = request.args.get('city')
@@ -67,5 +68,8 @@ def home():
 
 @main.route('/prices', methods=["GET", "POST"])
 def prices():
+    user_identifier = current_user.email if current_user.is_authenticated else "visitor"
+    send_slack_notification(f"Prices page visited by {user_identifier}")
+
     packages = Package.query.all()
     return render_template("prices.html", packages=packages)

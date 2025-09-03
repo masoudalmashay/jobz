@@ -3,7 +3,7 @@ from flask import Blueprint, request, session, render_template, url_for, flash, 
 
 from flask_login import login_required, current_user
 
-from ..extensions import supabase, supabase_admin
+from ..extensions import supabase, supabase_admin, send_slack_notification
 
 from app.forms.job_form import JobForm
 from app.forms.payment_option_form import PaymentOptionForm
@@ -51,6 +51,10 @@ def checkout(package_id):
 
                 if balance < package.price:
                     flash("رصيد المحفظة غير كافي لدفع هذه الباقة.", "error")
+
+                    user_identifier = current_user.email if current_user.is_authenticated else "visitor"
+                    send_slack_notification(f"A user tried to purchase but the balance {balance} and the package price {package.price} by {user_identifier}")
+
                     return redirect(url_for("payment.checkout", package_id=package.id))
 
                 # Stage order in DB (not committed yet)
@@ -78,6 +82,10 @@ def checkout(package_id):
                 db.session.commit()
 
                 flash("تم شراء الباقة بنجاح!", "success")
+
+                user_identifier = current_user.email if current_user.is_authenticated else "visitor"
+                send_slack_notification(f"A package {package.name} was purchased by {user_identifier}")
+
                 return redirect(url_for("profile.wallet"))
 
             except Exception as e:
@@ -85,11 +93,19 @@ def checkout(package_id):
                 db.session.rollback()
                 current_user.balance = old_balance
                 flash("حدث خطأ أثناء الدفع. لم يتم الخصم من رصيدك.", "error")
+
+                user_identifier = current_user.email if current_user.is_authenticated else "visitor"
+                send_slack_notification(f"An error caused by {user_identifier} -> {str(e)}")
+
                 print(e)
                 return redirect(url_for("payment.checkout", package_id=package.id))
 
         else:
             flash("رصيد المحفظة غير كافي لدفع هذه الباقة.", "error")
+
+            user_identifier = current_user.email if current_user.is_authenticated else "visitor"
+            send_slack_notification(f"A trial purchase but no sufficent balance by {user_identifier}")
+
             return redirect(url_for("payment.checkout", package_id=package.id))
 
     return render_template("payments/checkout.html", package=package)
@@ -170,14 +186,24 @@ def redeem_card():
                 })
             except (KeyError, ValueError):
                 flash("حدث خطأ أثناء استرداد الرمز. يرجى المحاولة مرة أخرى. 🐣", "error")
+
+                user_identifier = current_user.email if current_user.is_authenticated else "visitor"
+                send_slack_notification(f"A redeemed failed error caused by {user_identifier} -> {str(result)}")
+
                 return redirect(url_for("payment.redeem_card"))
 
             flash("✅ تم التعبئة بنجاح", "success")
+
+            user_identifier = current_user.email if current_user.is_authenticated else "visitor"
+            send_slack_notification(f"A code redeemed successfully by {user_identifier}")
 
             return redirect(url_for("profile.wallet"))
 
         else:
             flash("الرمز غير صالح أو تم استخدامه من قبل 🐣", "error")
+
+            user_identifier = current_user.email if current_user.is_authenticated else "visitor"
+            send_slack_notification(f"A used or wrong code used by {user_identifier}")
 
 
     return render_template("payments/redeem.html", form=form)
