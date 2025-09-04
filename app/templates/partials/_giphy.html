@@ -1,0 +1,17 @@
+{% if giphy%}
+    <img 
+    src="{{ giphy }}" 
+    alt="vibe emoji" 
+    class="rounded"
+    style="
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        width: 80px;   /* adjust size */
+        height: auto;
+        z-index: 9999;
+        pointer-events: none; /* allows clicks to pass through */
+    "
+>
+
+{% endif %}

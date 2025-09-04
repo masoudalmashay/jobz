@@ -52,13 +52,14 @@
     <title>GoWork | {% block title %}{% endblock %}</title>
 </head>
 <body dir="rtl" class="bg-gray-50" style="font-family: 'Cairo', sans-serif;">
+    {% include "partials/_banner.html" %}
     {% include "partials/_navbar.html" %}
     {% include "partials/_flash_messages.html" %}
 
     {% block hero %}
     {%endblock%}
     
-    <main class="px-2 md:px-6 lg:px-12 min-h-screen py-8">
+    <main class=" min-h-screen py-8">
         {% block content %}
         {% endblock %}
     </main>
@@ -67,6 +68,7 @@
     {%endblock%}
 
     {% include "partials/_footer.html" %}
+    {% include "partials/_giphy.html" %}
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

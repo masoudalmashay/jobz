@@ -1,7 +1,7 @@
 import os
 from flask import Flask
 from dotenv import load_dotenv
-
+from app.lib import time_since
 from .routes.auth import auth
 from .routes.main import main
 from .routes.errors import errors
@@ -68,6 +68,10 @@ def create_app():
     app.register_blueprint(profile, url_prefix="/account")
     app.register_blueprint(job_listing, url_prefix="/jobs")
     app.register_blueprint(payment, url_prefix="/payments")
+
+    # filters
+    app.jinja_env.globals.update(time_since=time_since)
+
 
 
     # start_scheduler(app) # vercel does not support background tasks, so i comment this out

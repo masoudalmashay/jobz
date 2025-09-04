@@ -8,7 +8,7 @@ from app.extensions import db, get_user_info, send_slack_notification, generate_
 from flask_login import login_required, current_user
 import os
 from dotenv import load_dotenv
-
+from app.lib import giphy_trending, mark_jobs
 load_dotenv()
 
 main = Blueprint("main", __name__)
@@ -24,7 +24,7 @@ def home():
     page = request.args.get('page', 1, type=int)
     per_page = 10
 
-    query = Job.query
+    query = Job.query.order_by(Job.created_at.desc())
 
     if search:
         query = query.filter(Job.title.ilike(f"%{search}%"))
@@ -50,19 +50,24 @@ def home():
             'user': user_info
         })
 
+    marked_jobs = mark_jobs(jobs)
+
     cities = City.query.all()
     categories = Category.query.all()
 
+    giphy = giphy_trending()
+
     return render_template(
         'home.html',
-        jobs=jobs,
+        jobs=marked_jobs,
         pagination=pagination,
         r2_public_url=os.getenv('R2_PUBLIC_URL'),
         cities=cities,
         categories=categories,
         current_search=search,
         current_category=category_id,
-        current_city=city_id
+        current_city=city_id,
+        giphy=giphy
     )
 
 

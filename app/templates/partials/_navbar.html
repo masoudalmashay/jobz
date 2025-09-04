@@ -24,13 +24,16 @@
           <li><a class="text-red-500" href="{{url_for('auth.logout')}}">🚪 تسجيل الخروج</a></li>
         {% endif %}
       </ul>
-
+        
+      </div>
+      <div>
+        <a href="{{ url_for('main.home') }}" class="btn btn-ghost text-xl inline md:hidden">GoWork</a>
       </div>
     </div>
-    <div class="navbar-center">
+    <div class="navbar-center hidden md:block">
       <a href="{{ url_for('main.home') }}" class="btn btn-ghost text-xl">GoWork</a>
     </div>
     <div class="navbar-end space-x-2">
-      <a class="btn btn-neutral btn-xs md:btn-md" href="{{url_for('job_listing.add')}}">➕ إضافة وظيفة</a>
+      <a class="btn btn-neutral btn-md" href="{{url_for('job_listing.add')}}">➕ إضافة وظيفة</a>
     </div>
   </div>

@@ -5,16 +5,16 @@
 {% endblock %}
 
 {% block content %}
-<div class="px-2 md:px-6  pt-8 w-full md:w-[80%] md:mx-auto text-sm md:text-lg font-bold">
+<div class="px-2 md:px-0  w-full md:w-[95%] lg:w-[80%] md:mx-auto text-sm md:text-lg font-bold">
       وظائفي
 </div>
-<div class="px-2 md:px-6  pt-8 w-full md:w-[80%] md:mx-auto text-sm text-gray-500">
+<div class="px-2 md:px-0  pt-2 w-full md:w-[95%] lg:w-[80%] md:mx-auto text-sm text-gray-500">
     تصنيف بناءا على
 </div>
 <form method="GET" class="w-full" id="filter-form">
-    <div class="pt-2 pb-6 px-2 md:px-6 w-full md:w-[80%] md:mx-auto text-xl font-bold space-y-2 md:space-y-0 md:flex justify-between">
+    <div class="pt-2 pb-2 px-2 md:px-0 w-full md:w-[95%] lg:w-[80%] md:mx-auto text-xl font-bold space-y-2 md:space-y-0 md:flex justify-between">
       <div class="flex gap-2 w-full">
-        <label class="input">
+        <label class="input w-full md:w-sm">
           <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
               <circle cx="11" cy="11" r="8"></circle>
@@ -26,8 +26,8 @@
         <button class="btn btn-neutral">بحث</button>
       </div>
   
-      <div class="flex gap-2">
-        <select class="select" name="category" onchange="document.getElementById('filter-form').submit()">
+      <div class="flex gap-2 w-full">
+        <select class="select w-full" name="category" onchange="document.getElementById('filter-form').submit()">
           <option disabled selected>التصنيفات</option>
           <option value="">الكل</option>
           {% for category in categories %}
@@ -35,7 +35,7 @@
           {% endfor %}
         </select>
   
-        <select class="select" name="city" onchange="document.getElementById('filter-form').submit()">
+        <select class="select w-full" name="city" onchange="document.getElementById('filter-form').submit()">
           <option disabled selected>المدن</option>
           <option value="">الكل</option>
           {% for city in cities %}
@@ -48,16 +48,16 @@
     </div>
   </form>
   
-<div class="p-2 md:p-6 w-full md:w-[80%] md:mx-auto space-y-4">
+<div class="p-2 md:p-0 w-full md:w-[95%] lg:w-[80%] md:mx-auto space-y-2">
     {% if not jobs %}
         <p class="text-center text-gray-600">لا يوجد وظائف</p>
     {% else: %}
     
     {% for job in jobs: %}
-    <div class="bg-white shadow-sm border border-gray-200 p-2 md:p-6 rounded-sm md:flex justify-between items-center">
-        <div class="flex gap-4 items-center justify-center">
+    <div class="bg-white shadow-sm border border-gray-200 p-2 rounded-sm md:flex justify-between items-center">
+        <div class="flex gap-4 items-center md:justify-center">
             <div class="avatar">
-                <div class="w-16 md:w-20 rounded-full border border-gray-300">
+                <div class="w-12 rounded-full border border-gray-300">
                   <img src="{{r2_public_url}}/{{job['user']['logo_url']}}" />
                 </div>
             </div>
@@ -66,15 +66,15 @@
                 <p class="text-gray-800 font-bold md:text-lg">{{job['job'].title}}</p>
                 <p class="text-gray-600">{{job['user']['company_name']}}</p>
                 <div>
-                    <div class="badge badge-outline badge-info">{{job['job'].category.name}}</div>
-                    <div class="badge badge-outline badge-warning">{{job['job'].city.name}}</div>
+                    <div class="badge badge-sm badge-outline badge-info">{{job['job'].category.name}}</div>
+                    <div class="badge badge-sm badge-outline badge-warning">{{job['job'].city.name}}</div>
                 </div>
             </div>
         </div>
         <div>
             <!-- 🗑️ Delete Button -->
             <button 
-            class="btn btn-neutral btn-sm md:btn-lg w-full mt-4 md:mt-0"
+            class="btn btn-neutral btn-sm w-full mt-4 md:mt-0"
             @click="document.getElementById('delete_modal_{{ job['job'].id }}').showModal()">
             حذف 🤫
             </button>
@@ -97,7 +97,7 @@
                 </div>
             </dialog>
 
-            <a href="{{url_for('job_listing.single_job', job_id=job['job'].slug)}}" class="btn btn-neutral btn-sm md:btn-lg w-full mt-4 md:mt-2">عرض 👁️‍🗨️</a>
+            <a href="{{url_for('job_listing.single_job', job_id=job['job'].slug)}}" class="btn btn-neutral btn-sm w-full mt-2 md:mt-2">عرض 👁️‍🗨️</a>
         </div>
     </div>
     {% endfor %}
