@@ -31,12 +31,20 @@
             </div>
         </div>
 
-        <p class="pt-8">
+        <p class="pt-8" id="job-desc">
             {{job['job'].description | safe}}
         </p>
     </div>
     
 </div>
+
+<script type="module">
+    import {direction} from 'https://cdn.skypack.dev/direction@2?min'
+
+    const p = document.getElementById("job-desc");
+    const dir = direction(p.textContent);
+    p.setAttribute("dir", dir);
+</script>
 
 {% if other_jobs: %}
 <div class="py-6 w-full md:w-1/2 md:mx-auto text-xl font-bold">

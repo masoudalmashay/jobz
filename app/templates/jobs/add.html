@@ -62,9 +62,10 @@
             
                 <trix-editor 
                     input="x" 
+                    id="job-editor"
                     class="trix-content bg-white border border-gray-300 p-2 rounded"
                     placeholder="ما هي الوظيفة؟ اكتب وصفًا عامًا يوضح طبيعة العمل، المهام اليومية، والفريق أو القسم الذي سيكون فيه الموظف."></trix-editor>
-            
+                    
                 <p class="label text-red-500">
                     {{ form.description.errors[0] if form.description.errors else '' }}
                 </p>
@@ -95,5 +96,18 @@
 
 {%block script%}
 <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
+<script type="module">
+    import {direction} from 'https://cdn.skypack.dev/direction@2?min'
+
+
+
+    const editor = document.getElementById("job-editor");
+
+    editor.addEventListener("trix-change", function() {
+        const text = editor.innerText || editor.textContent;
+        const dir = direction(text);
+        editor.setAttribute("dir", dir);
+    });
+</script>
 {%endblock%}
 
