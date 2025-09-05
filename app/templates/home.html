@@ -95,6 +95,8 @@
     </div>
     {% endfor %}
 
+    {% include "partials/_scraped_jobs.html" %}
+
     <div class="mt-6 flex justify-center space-x-2" id="pagination"  >
         {% if pagination.has_prev %}
           <a href="{{ url_for('main.home', page=pagination.prev_num, search=current_search, category=current_category, city=current_city) }}" class="btn btn-outline">⬅️ السابق</a>
@@ -113,4 +115,6 @@
     
     
 </div>
+
+
 {% endblock %}

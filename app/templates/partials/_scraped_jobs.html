@@ -1,0 +1,43 @@
+{% if scraped_jobs %}
+
+<h2 class="text-2xl font-bold mb-4 mt-6">وظائف من مواقع أخرى</h2>
+
+
+{% for job in scraped_jobs: %}
+    <div class="bg-white shadow-xs border border-gray-200 p-2 md:p-4 rounded-sm md:flex justify-between items-center">
+        <div class="flex gap-4 items-center md:justify-center">
+            <div class="avatar">
+                <div class="w-12 md:w-12 rounded-full border border-gray-300">
+                  <img src="{{job['job'].logo_url}}" />
+                </div>
+            </div>
+    
+            <div class="space-y-1 md:space-y-1">
+                <p class="text-gray-800 font-bold md:text-md">
+                  {{job['job'].title}}
+                  {% if job['is_hot'] %}
+                    {% set file_path = 'images/hot2x.gif' %}
+                    {% include "partials/_emojii_pfp.html"  %}
+                  {% endif %}
+
+                  {% if job['is_new'] %}
+                    {% set file_path = 'images/new2x.gif' %}
+                    {% include "partials/_emojii_pfp.html"  %}
+                  {% endif %}
+                </p>
+                <p class="text-gray-600">{{job['job'].company_name}}</p>
+                <div>
+                    <div class="badge badge-sm badge-outline badge-info">{{job['job'].category}}</div>
+                    <div class="badge badge-sm badge-outline badge-warning">{{job['job'].city}}</div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <a href="{{url_for('job_listing.single_scraped_job', job_id=job['job'].slug)}}" class="btn btn-neutral btn-sm md:btn-md w-full mt-4 md:mt-0">🚀 تقديم</a>
+
+        </div>
+    </div>
+    {% endfor %}
+
+
+{% endif %}

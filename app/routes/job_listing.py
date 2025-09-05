@@ -7,6 +7,7 @@ from app.forms.job_form import JobForm
 
 from app.models.order import Order
 from app.models.job import Job
+from app.models.scraped_job import ScrapedJob
 from app.models.category import Category
 from app.models.city import City
 from app.models.social_post import SocialPost
@@ -133,6 +134,22 @@ def single_job(job_id):
     other_jobs = []
 
     return render_template('jobs/show.html', job=job, other_jobs=other_jobs, r2_public_url=os.getenv('R2_PUBLIC_URL'))
+
+
+@job_listing.route('/s/<job_id>')
+def single_scraped_job(job_id):
+    try:
+        raw_job = ScrapedJob.query.filter_by(slug = job_id).first_or_404()
+    except Exception as e:
+        print(e)
+        flash("😔 حدث خطأ، يرجى المحاولة لاحقاً", "error")
+        return redirect('/')
+
+    job = raw_job
+
+    other_jobs = []
+
+    return render_template('jobs/show_scraped_job.html', job=job, other_jobs=other_jobs, r2_public_url=os.getenv('R2_PUBLIC_URL'))
 
 
 @job_listing.route('/delete/<int:job_id>', methods=['POST'])

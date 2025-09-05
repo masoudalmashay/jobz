@@ -50,6 +50,7 @@ def create_app():
     from .models import order
     from .models import job
     from .models import social_post
+    from .models import scraped_job
     
 
     migrate.init_app(app, db)
