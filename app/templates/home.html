@@ -14,6 +14,11 @@
 
 
 {% block content %}
+{#
+<div class="px-2 md:px-0 pt-8 w-full md:w-[95%] lg:w-[80%] md:mx-auto">
+    {% include "partials/_ad_banner.html" %}
+</div>
+#}
 <div class=" px-2 md:px-0 pt-8 w-full md:w-[95%] lg:w-[80%] md:mx-auto text-sm text-gray-500">
     تصنيف بناءا على
 </div>
@@ -55,7 +60,7 @@
   </form>
   
 <div class="px-2 md:px-0 w-full md:w-[95%] lg:w-[80%] md:mx-auto space-y-2" id="records" x-merge="append">
-    {% if not jobs %}
+    {% if not jobs and not scraped_jobs  %}
         <p class="text-center text-gray-600">لا يوجد وظائف</p>
     {% else: %}
     
