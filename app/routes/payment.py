@@ -193,6 +193,7 @@ def redeem_card():
                 return redirect(url_for("payment.redeem_card"))
 
             flash("✅ تم التعبئة بنجاح", "success")
+            session["is_party"] = True
 
             user_identifier = current_user.email if current_user.is_authenticated else "visitor"
             send_slack_notification(f"A code redeemed successfully by {user_identifier}")

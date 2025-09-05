@@ -1,4 +1,4 @@
-from flask import request, flash, redirect, url_for, render_template, Blueprint
+from flask import request, flash, redirect, url_for, render_template, Blueprint, session
 from flask_login import login_required, current_user
 from app.forms.update_info_form import UpdateInfoForm
 from app.forms.update_logo_form import UpdateLogoForm
@@ -102,8 +102,10 @@ def edit():
 @profile.route('/wallet', methods=['GET'])
 @login_required
 def wallet():
+    is_party = session.pop("is_party", False)
     
     return render_template(
         'profile/wallet.html',
-        balance=current_user.balance
+        balance=current_user.balance,
+        is_party=is_party
     )

@@ -51,6 +51,59 @@
     <meta name="author" content="GoWork" />
 
     <title>GoWork | {% block title %}{% endblock %}</title>
+    <style>
+        html.is-changing .transition-fade {
+            transition: opacity 0.25s;
+            opacity: 1;
+        }
+        html.is-animating .transition-fade {
+            opacity: 0;
+        }
+
+        .swup-progress-bar {
+            height: 3px;
+            background: linear-gradient(
+                90deg,
+                #ffe100,
+                #fff8a0,
+                #ffe100
+            ); /* subtle gradient for shine */
+            border-radius: 100%;
+            position: absolute;
+            overflow: hidden;
+
+            /* Glow */
+            box-shadow: 0 0 6px rgba(255, 225, 0, 0.8),
+                        0 0 12px rgba(255, 225, 0, 0.5);
+        }
+
+    /* shimmer effect */
+    .swup-progress-bar::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -50%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(
+            120deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.6) 50%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        animation: shine 2s infinite;
+    }
+
+    @keyframes shine {
+        from {
+            left: -50%;
+        }
+        to {
+            left: 100%;
+        }
+    }
+
+    </style>
 </head>
 <body dir="rtl" class="bg-gray-50" style="font-family: 'Cairo', sans-serif;">
     {% include "partials/_banner.html" %}
@@ -60,7 +113,7 @@
     {% block hero %}
     {%endblock%}
     
-    <main class=" min-h-screen py-8">
+    <main id="swup" class="transition-fade min-h-screen py-8">
         {% block content %}
         {% endblock %}
     </main>
@@ -70,6 +123,15 @@
 
     {% include "partials/_footer.html" %}
     {% include "partials/_giphy.html" %}
+    <script src="https://unpkg.com/@swup/progress-plugin@3"></script>
+    <script type="module">
+      import Swup from 'https://unpkg.com/swup@4?module';
+      const swup = new Swup(
+        {
+            plugins: [new SwupProgressPlugin()]
+        }
+      );
+    </script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

@@ -21,3 +21,22 @@
     </div>
 </div>
 {% endblock %}
+
+
+{%block script%}
+    {% if is_party %}
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            confetti({
+                particleCount: 150,
+                spread: 90,
+                origin: { y: 0.6 }
+            });
+            }, 300); // wait 300ms to make sure canvas is ready
+        </script>
+    {% endif %}
+
+{%endblock%}
+
+

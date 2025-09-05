@@ -1,12 +1,19 @@
 <div
-  class="hero min-h-20"
-  style="background-image: url(https://img.daisyui.com/images/stock/photo-1507358522600-9f71e620c44e.webp);"
+  class="hero min-h-20 bg-cover bg-right md:bg-center"
+  style="
+  background-image: url('{{ url_for('static', filename='images/banner.png') }}');
+  background-repeat: no-repeat;
+  background-color: #e8bf00;
+  "
+
 >
-  <div class="hero-overlay bg-opacity-100"></div>
-  <div class="hero-content text-neutral-content text-center">
+  <div class="hero-overlay block md:hidden"></div>
+  <div class="hero-content text-white md:text-black text-center">
+    
     <div class="max-w-lg">
-      {# <h1 class="mb-5 text-5xl font-bold">وظائف محلية في ليبيا</h1> #}
-      <p class="mb-5 font-bold">
+      
+      {# <h1 class="mb-5  lg:text-5xl font-bold">وظائف محلية في ليبيا</h1> #}
+      <p class="mb-5 font-bold text-sm md:text-lg lg:text-2xl">
         الفرص واجدة… بس لازم تعرف وين تلقاها 😉
       </p>
     </div>

@@ -1,5 +1,5 @@
 <div class="navbar bg-base-100 shadow-sm">
-    <div class="navbar-start">
+    <div class="navbar-start" data-swup-preload-all>
       <div class="dropdown">
         <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /> </svg>
@@ -33,7 +33,33 @@
     <div class="navbar-center hidden md:block">
       <a href="{{ url_for('main.home') }}" class="btn btn-ghost text-3xl" style="font-family: Sirivennela;">GoWork</a>
     </div>
-    <div class="navbar-end space-x-2">
+    {#<div class="navbar-end space-x-2">
       <a class="btn btn-neutral btn-md" href="{{url_for('job_listing.add')}}">➕ إضافة وظيفة</a>
+    </div>#}
+
+    <div class="navbar-end space-x-2" data-swup-preload-all>
+      <a 
+        class="btn btn-md text-white relative overflow-hidden rounded-md px-4 py-2"
+        href="{{url_for('job_listing.add')}}"
+        
+      >
+        
+
+        <span class="absolute inset-0 animate-gradient bg-gradient-to-r from-black via-indigo-900 to-black opacity-100"></span>
+        <span class="relative z-10">➕ إضافة وظيفة</span>
+      </a>
     </div>
   </div>
+
+<style>
+@keyframes gradientShift {
+0% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+100% { background-position: 0% 50%; }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+    animation: gradientShift 6s ease infinite;
+  }
+</style>
