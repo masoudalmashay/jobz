@@ -50,7 +50,7 @@
     <meta name="keywords" content="{% block keywords %}وظائف شاغرة, بنغازي, طرابلس, ليبيا, {% endblock %}" />
     <meta name="author" content="GoWork" />
 
-    <title>GoWork | {% block title %}{% endblock %}</title>
+    <title>GoWork {% block title %}{% endblock %}</title>
     <style>
         html.is-changing .transition-fade {
             transition: opacity 0.25s;
@@ -110,28 +110,35 @@
     {% include "partials/_navbar.html" %}
     {% include "partials/_flash_messages.html" %}
 
-    {% block hero %}
-    {%endblock%}
-    
-    <main id="swup" class="transition-fade min-h-screen py-8">
-        {% block content %}
-        {% endblock %}
-    </main>
+    <div id="swup" class="transition-fade">
 
+   
+        {% block hero %}
+        {%endblock%}
+        
+        <main class="min-h-screen py-8">
+            {% block content %}
+            {% endblock %}
+        </main>
+        {% include "partials/_giphy.html" %}
+     </div>
     {%block script%}
     {%endblock%}
 
     {% include "partials/_footer.html" %}
-    {% include "partials/_giphy.html" %}
+    
+    <!--
+    <script src="https://unpkg.com/@swup/preload-plugin@3"></script>
     <script src="https://unpkg.com/@swup/progress-plugin@3"></script>
     <script type="module">
       import Swup from 'https://unpkg.com/swup@4?module';
       const swup = new Swup(
         {
-            plugins: [new SwupProgressPlugin()]
+            plugins: [new SwupProgressPlugin(), new SwupPreloadPlugin()]
         }
       );
     </script>
+    -->
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@ from app.models.category import Category
 from app.models.scraped_job import ScrapedJob
 
 from app.models.package import Package
-from app.extensions import db, get_user_info, send_slack_notification, generate_image_template
+from app.extensions import db, get_user_info, send_slack_notification, generate_image_template, get_user_location
 from flask_login import login_required, current_user
 import os
 from dotenv import load_dotenv
@@ -103,7 +103,10 @@ def home():
 @main.route('/prices', methods=["GET", "POST"])
 def prices():
     user_identifier = current_user.email if current_user.is_authenticated else "visitor"
-    send_slack_notification(f"Prices page visited by {user_identifier}")
+    ip, location_info = get_user_location()
+
+    send_slack_notification(f"Prices page visited by {user_identifier} from {location_info} (IP: {ip})")
+
 
     packages = Package.query.all()
     return render_template("prices.html", packages=packages)

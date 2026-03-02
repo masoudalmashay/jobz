@@ -177,3 +177,37 @@ def post_to_social_media(job_cat, job_place, company_name, job_title, logo_url=N
     return {"status": False, "error": "something went wrong"}
 
 
+import requests
+from flask import request
+
+def get_client_ip():
+    """Extract the real client IP address, even behind proxies."""
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    if ip and ',' in ip:
+        ip = ip.split(',')[0].strip()
+    return ip
+
+
+def get_location_from_ip(ip):
+    """Get city and country from IP using ipapi.co."""
+    location_info = "unknown location"
+    try:
+        response = requests.get(f'https://ipapi.co/{ip}/json/', timeout=3)
+        if response.status_code == 200:
+            data = response.json()
+            country = data.get('country_name')
+            city = data.get('city')
+            if country and city:
+                location_info = f"{city}, {country}"
+            elif country:
+                location_info = country
+    except Exception as e:
+        print(f"Geolocation lookup failed for {ip}: {e}")
+    return location_info
+
+
+def get_user_location():
+    """Get both IP and location (city, country) in one call."""
+    ip = get_client_ip()
+    location_info = get_location_from_ip(ip)
+    return ip, location_info

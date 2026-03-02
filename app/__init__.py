@@ -30,10 +30,10 @@ def create_app():
 
     
     # app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{NEON_USER}:{NEON_PASSWORD}@ep-old-credit-a2b3vbqj-pooler.eu-central-1.aws.neon.tech/{NEON_DB}?sslmode=require"
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('XATA_URL')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['DEBUG'] = True
-    app.config['SECRET_KEY'] = 'your_super_secret_key_here'
+    app.config['SECRET_KEY'] = os.getenv('APP_SECRET_KEY')
     app.config["TEMPLATES_AUTO_RELOAD"] = True
 
     import datetime

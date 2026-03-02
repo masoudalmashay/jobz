@@ -23,4 +23,4 @@ def handle_rate_limit(e):
     return redirect(url_for("main.home"))
 
 if __name__ == "__main__":
-        app.run(debug= True if os.getenv('FLASK_ENV') == 'development' else False) # Set debug=True for development purposes
+        app.run(debug= True if os.getenv('FLASK_ENV') == 'development' else False, port=5001) # Set debug=True for development purposes
