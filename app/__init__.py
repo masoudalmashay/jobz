@@ -23,10 +23,6 @@ def create_app():
 
     limiter.init_app(app)
 
-    NEON_PASSWORD = os.getenv('NEON_PASSWORD')
-    NEON_DB = os.getenv('NEON_DB')
-
-    NEON_USER = os.getenv('NEON_USER')
 
     
     # app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{NEON_USER}:{NEON_PASSWORD}@ep-old-credit-a2b3vbqj-pooler.eu-central-1.aws.neon.tech/{NEON_DB}?sslmode=require"
